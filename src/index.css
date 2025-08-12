@@ -1,0 +1,24 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    padding: 40px;
+    background-color: #151515;
+    font-family: 'Montserrat', sans-serif;
+}
+
+h2{
+    color: #f3f3f3;
+    text-align: center;
+    font-size: 50px;
+}
+.name {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1024px;
+    margin: 0 auto;
+
+}
