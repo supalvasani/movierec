@@ -2,38 +2,28 @@ import React, { useState, useEffect } from 'react';
 import Search from "./Components/Search.jsx";
 import Spinner from './Components/Spinner.jsx'; // Assuming you have a Spinner component
 
-const API_KEY = import.meta.env.VITE_TRAK_API_KEY;
-
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+const API_BASE_URL = 'https://api.themoviedb.org/3/';
 const API_OPTIONS = {
     method: 'GET',
     headers: {
-        'Content-Type': 'application/json',
-        'trakt-api-version': '2',
-        'trakt-api-key': API_KEY
+       accept: 'application/json',
+        authorization: 'Bearer ' + API_KEY,
     }
 };
 
 const App = () => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
     const [movieList, setMovieList] = useState([]);
+    const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const fetchMovies = async () => {
         setIsLoading(true);
         setErrorMessage('');
         console.log("Starting movie fetch...");
-
-        if (!API_KEY) {
-            console.error("API Key is missing! Check your .env.local file.");
-            setErrorMessage("API Key is missing. Please check your configuration.");
-            setIsLoading(false);
-            return;
-        }
-
         try {
-            // --- FIX: Changed endpoint from /shows/trending to /movies/trending ---
-            const endpoint = 'https://api.trakt.tv/movies/trending';
+            const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
             const response = await fetch(endpoint, API_OPTIONS);
             console.log("API Response Status:", response.status);
 
@@ -41,14 +31,13 @@ const App = () => {
                 throw new Error(`Failed to fetch movies: ${response.statusText} (check API key)`);
             }
             const data = await response.json();
-            console.log("Data received from API:", data);
-
-            if (Array.isArray(data)) {
-                setMovieList(data);
-            } else {
+            if(data.Response === 'False'){
+                setErrorMessage(data.Error || 'Failed to fetch movies. ');
                 setMovieList([]);
-                setErrorMessage("Received an unexpected response from the server.");
+                return;
             }
+
+            setMovieList(data.results || []);
 
         } catch (error) {
             console.error('Error fetching movies:', error);
@@ -74,27 +63,22 @@ const App = () => {
                 <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
                 <section className="all-movies">
-                    <h2 className="text-2xl font-bold text-white sm:text-3xl mb-5">
+                    <h2 className="mt-[40px]">
                         Trending Movies
                     </h2>
 
                     {isLoading ? (
-                        <Spinner />
+                      <Spinner />
                     ) : errorMessage ? (
-                        <p className="text-red-500">{errorMessage}</p>
+                        <p className= "text-red-500">{errorMessage}</p>
                     ) : (
-                        movieList.length > 0 ? (
-                            <ul className="space-y-4"> {/* Added spacing between list items */}
-                                {movieList.map(item => (
-                                    <li key={item.movie.ids.trakt}>
-                                        <p className="text-white text-lg">{item.movie.title}</p>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="text-white">No movies found.</p>
-                        )
-                    )}
+                        <ul>
+                            {movieList.map(movie => (
+                                <p key = {movie.id} className="text-white">{movie.title}</p>
+                            ))}
+                        </ul>
+                    )
+                    }
                 </section>
             </div>
         </main>
