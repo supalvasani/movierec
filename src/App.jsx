@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react';
 import Search from "./Components/Search.jsx";
+import Spinner from './Components/Spinner.jsx'; // Assuming you have a Spinner component
 
-const API_BASE_URL = 'https://api.trakt.tv/shows/trending';
 const API_KEY = import.meta.env.VITE_TRAK_API_KEY;
+
 const API_OPTIONS = {
     method: 'GET',
     headers: {
@@ -10,7 +11,8 @@ const API_OPTIONS = {
         'trakt-api-version': '2',
         'trakt-api-key': API_KEY
     }
-}
+};
+
 const App = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -20,25 +22,40 @@ const App = () => {
     const fetchMovies = async () => {
         setIsLoading(true);
         setErrorMessage('');
+        console.log("Starting movie fetch...");
+
+        if (!API_KEY) {
+            console.error("API Key is missing! Check your .env.local file.");
+            setErrorMessage("API Key is missing. Please check your configuration.");
+            setIsLoading(false);
+            return;
+        }
 
         try {
-            const endpoint = `${API_BASE_URL}`;
-            const response = await fetch(endpoint,API_OPTIONS);
-            if(!response.ok) {
-                throw new Error(`Failed to fetch movies`);
+            // --- FIX: Changed endpoint from /shows/trending to /movies/trending ---
+            const endpoint = 'https://api.trakt.tv/movies/trending';
+            const response = await fetch(endpoint, API_OPTIONS);
+            console.log("API Response Status:", response.status);
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch movies: ${response.statusText} (check API key)`);
             }
             const data = await response.json();
+            console.log("Data received from API:", data);
+
             if (Array.isArray(data)) {
                 setMovieList(data);
             } else {
                 setMovieList([]);
                 setErrorMessage("Received an unexpected response from the server.");
             }
-        }catch (error) {
-            console.log('${error}', error);
-            setErrorMessage(error.message + 'error fetching movies,please tryagain later');
-        }finally {
+
+        } catch (error) {
+            console.error('Error fetching movies:', error);
+            setErrorMessage(error.message);
+        } finally {
             setIsLoading(false);
+            console.log("Finished movie fetch.");
         }
     };
 
@@ -48,32 +65,40 @@ const App = () => {
 
     return (
         <main>
-        <div className= "pattern" />
-        <div className= "wrapper">
-            <header>
-                <img src="./hero.png" alt={"Hero Banner"}/>
-                <h1>Find <span className="text-gradient">Movies</span>You'll Enjoy Without Hassle!!</h1>
-                <Search searchTerm = {searchTerm} setSearchTerm={setSearchTerm} />
-            </header>
-            <section className= "all-movies">
-                <h2>All Movies</h2>
-                {isLoading ? (
-                    <p className="text-white">Loading...</p>
-                ):errorMessage ?(
-                    <p className="text-red-500">{errorMessage}</p>
-                ):(
-                    <ul>
-                        {movieList.map(item => (
-                            <li key={item.movie.ids.trakt}>
-                                <p className="text-white">{item.movie.title}</p>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </section>
+            <div className="pattern" />
+            <div className="wrapper">
+                <header>
+                    <img src="./hero.png" alt={"Hero Banner"} />
+                    <h1>Find <span className="text-gradient">Movies</span>You'll Enjoy Without Hassle!!</h1>
+                </header>
+                <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-        </div>
+                <section className="all-movies">
+                    <h2 className="text-2xl font-bold text-white sm:text-3xl mb-5">
+                        Trending Movies
+                    </h2>
+
+                    {isLoading ? (
+                        <Spinner />
+                    ) : errorMessage ? (
+                        <p className="text-red-500">{errorMessage}</p>
+                    ) : (
+                        movieList.length > 0 ? (
+                            <ul className="space-y-4"> {/* Added spacing between list items */}
+                                {movieList.map(item => (
+                                    <li key={item.movie.ids.trakt}>
+                                        <p className="text-white text-lg">{item.movie.title}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-white">No movies found.</p>
+                        )
+                    )}
+                </section>
+            </div>
         </main>
-    )
-}
-export default App
+    );
+};
+
+export default App;
