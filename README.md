@@ -16,7 +16,7 @@
 
 You can view the live deployment of this project on Vercel.
 
-[**Visit the Live Site →**](movierec-gamma.vercel.app)
+[**Visit the Live Site →**](https://movierec-gamma.vercel.app)
 
 ---
 
