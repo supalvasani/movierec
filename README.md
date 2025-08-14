@@ -12,6 +12,13 @@
 <br />
 
 ---
+## 🚀 Live Demo
+
+You can view the live deployment of this project on Vercel.
+
+[**Visit the Live Site →**](movierec-gamma.vercel.app)
+
+---
 
 ## ✨ Features
 
