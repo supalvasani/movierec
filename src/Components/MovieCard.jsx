@@ -1,9 +1,10 @@
 import React from 'react'
 
-const MovieCard = ({movie : {title,vote_average, poster_path,release_date,original_language}}) => {
+const MovieCard = ({movie : {title,vote_average, poster_path, poster_url, release_date,original_language}}) => {
+    const resolvedPoster = poster_url || (poster_path ? `https://image.tmdb.org/t/p/w500/${poster_path}` : 'No-Poster.png');
     return (
        <div className="movie-card">
-           <img src={poster_path ? `https://image.tmdb.org/t/p/w500/${poster_path}` : 'No-Poster.png'} alt={title}/>
+           <img src={resolvedPoster} alt={title}/>
            <div className="mt-4"><h3>{title}</h3></div>
            <div className="content">
                <div className= "rating">
