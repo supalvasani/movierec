@@ -29,10 +29,16 @@ export const updateSearchCount = async (searchTerm, movie) => {
                 count: doc.count + 1,
             });
         } else {
+            // Strip any non-numeric characters from the movie ID (e.g., 'tt123456' -> 123456)
+            // since the Appwrite database schema defines movie_id as an Integer attribute.
+            const cleanMovieId = typeof movie.id === 'string'
+                ? parseInt(movie.id.replace(/\D/g, ''), 10)
+                : parseInt(movie.id, 10) || 0;
+
             await database.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), {
                 searchTerm,
                 count: 1,
-                movie_id: movie.id,
+                movie_id: cleanMovieId,
                 poster_url: movie.poster_url || movie.poster_path || '',
             });
         }

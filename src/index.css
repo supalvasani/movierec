@@ -21,22 +21,50 @@
 }
 
 @layer base {
+    :root[data-theme="light"] {
+        --color-primary: #f8fafc;
+        --color-dark-100: #ffffff;
+        --color-light-100: #64748b;
+        --color-light-200: #94a3b8;
+        --color-gray-100: #475569;
+    }
+
+    * {
+        @apply transition-colors duration-300;
+    }
+
     body {
         font-family: "DM Sans", serif;
         font-optical-sizing: auto;
         background: #030014;
     }
 
+    :root[data-theme="light"] body {
+        background: #f8fafc;
+    }
+
     h1 {
         @apply mx-auto max-w-4xl text-center text-5xl font-bold leading-tight tracking-[-1%] text-white sm:text-[64px] sm:leading-[76px];
+    }
+
+    :root[data-theme="light"] h1 {
+        color: #1a202c;
     }
 
     h2 {
         @apply text-2xl font-bold text-white sm:text-3xl;
     }
 
+    :root[data-theme="light"] h2 {
+        color: #1a202c;
+    }
+
     main {
         @apply min-h-screen relative bg-primary;
+    }
+
+    :root[data-theme="light"] main {
+        background: #f0f4f8;
     }
 
     header {
@@ -102,10 +130,10 @@
     }
 
     .movie-card {
-        @apply bg-dark-100 p-5 rounded-2xl shadow-inner shadow-light-100/10;
+        @apply bg-dark-100 p-5 rounded-2xl shadow-inner shadow-light-100/10 flex flex-col h-full;
 
-        & img {
-            @apply rounded-lg h-auto w-full;
+        & > img {
+            @apply rounded-lg w-full aspect-[2/3] object-cover;
         }
 
         & h3 {
@@ -113,7 +141,7 @@
         }
 
         & .content {
-            @apply mt-2 flex flex-row items-center flex-wrap gap-2;
+            @apply mt-auto pt-2 flex flex-row items-center flex-wrap gap-2;
         }
 
         & .rating {
@@ -138,6 +166,59 @@
 
         & .content .year {
             @apply text-gray-100 font-medium text-base;
+        }
+    }
+
+    /* Light mode: movie card overrides */
+    :root[data-theme="light"] .movie-card {
+        background: #ffffff;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+
+        & h3 {
+            color: #1a202c;
+        }
+
+        & .rating p {
+            color: #1a202c;
+        }
+
+        & .content span,
+        & .content .lang,
+        & .content .year {
+            color: #475569;
+        }
+    }
+
+    /* Light mode: search bar overrides */
+    :root[data-theme="light"] .search {
+        background: #ffffff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+        & input {
+            color: #1a202c;
+        }
+    }
+
+    /* Light mode: filter/sort overrides */
+    :root[data-theme="light"] .trending h2,
+    :root[data-theme="light"] .all-movies h2 {
+        color: #1a202c;
+    }
+
+    /* Modal Animation */
+
+    .animate-in {
+        animation: modal-in 0.2s ease-out;
+    }
+
+    @keyframes modal-in {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
         }
     }
 }
