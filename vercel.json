@@ -1,6 +1,7 @@
 {
   "framework": "vite",
   "buildCommand": "npm run build",
+  "installCommand": "pnpm install --no-frozen-lockfile",
   "outputDirectory": "dist",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
