@@ -1,79 +1,151 @@
-<div>
+# 🎬 Movie Data Engineering Platform
 
-# 🎬 MovieRec
-
-**A modern, responsive movie discovery web application built with React and Vite.**
-<br />
-
-</div>
-
-> MovieRec allows users to search for movies, view currently popular films, and see what's trending based on real-time search activity from all users. This project integrates the TMDB API for movie data and Appwrite for backend services.
-
-<br />
-
----
-## 🚀 Live Demo
-
-You can view the live deployment of this project on Vercel.
-
-[**Visit the Live Site →**](https://movierec-gamma.vercel.app)
+> A production-ready, automated data engineering platform that scrapes, cleans, deduplicates, and analyzes multi-source movie data (Wikipedia, IMDb, BoxOfficeMojo). Features real-time ETL execution logging, field quality scoring, cloud database sync (Supabase), and an interactive React dashboard.
 
 ---
 
-## ✨ Features
+## 🏗️ System Architecture
 
-* **Dynamic Movie Search:** Quickly find movies by title with a debounced search input for optimal performance.
-* **Popular & Trending Lists:** See currently popular movies from the TMDB API and view trending searches based on real-time user activity from the Appwrite database.
-* **Backend Integration:** Uses Appwrite to track search term frequency, creating a dynamic list of trending content.
-* **Modern & Responsive UI:** Clean user interface built with Tailwind CSS that works great on all screen sizes.
+```
+┌─────────────────────────────────────────────────────────────┐
+│                 Automated Scraper Pipeline                  │
+│                                                             │
+│  [ Wikipedia ]      [ IMDb MovieMeter ]   [ BoxOfficeMojo ] │
+│  2025/2026 Film      In-Theaters          Top Grossing      │
+│        │                     │                    │         │
+└────────┼─────────────────────┼────────────────────┼─────────┘
+         │                     │                    │
+         └─────────────────────┼────────────────────┘
+                               ▼
+            ┌────────────────────────────────────┐
+            │        Pandas Data Cleaning        │
+            │  - Deduplication across sources    │
+            │  - Data Quality Scoring (0-100%)   │
+            │  - Format Normalization            │
+            └──────────────────┬─────────────────┘
+                               │
+            ┌──────────────────┴─────────────────┐
+            │                                    │
+            ▼                                    ▼
+ ┌──────────────────────┐             ┌─────────────────────┐
+ │  Supabase PostgreSQL │             │  GitHub Actions /   │
+ │   - movies           │             │  Local Airflow DAGs │
+ │   - pipeline_runs    │             │  Scheduled Daily    │
+ └──────────┬───────────┘             └─────────────────────┘
+            │
+            ▼
+ ┌───────────────────────────────────────────────┐
+ │            React Web Dashboard                │
+ │  🎬 Discover     📊 Analytics Dashboard       │
+ │  🔄 Pipeline     🗂️ Data Quality Explorer     │
+ └───────────────────────────────────────────────┘
+```
+
+---
+
+## ✨ Core Features & Data Engineering Concepts
+
+* **Multi-Source Scraping**: Extract data from Wikipedia (release schedule), IMDb (ratings & popularity), and Box Office Mojo (revenue).
+* **Data Quality Scoring (0–100%)**: Evaluates each record's attribute completeness (Title, Year, Rating, Genre, Director, Poster).
+* **Cross-Source Deduplication**: Merges records for the same movie across different sources using normalized title keys.
+* **Automated Cloud Scheduling**: Scheduled via GitHub Actions (`.github/workflows/scraper_pipeline.yml`) to scrape, transform, and update database automatically every day.
+* **Airflow Compatible**: Easily wrappable in Apache Airflow DAGs (`airflow/dags`) for local pipeline monitoring at `localhost:8080`.
+* **Database & Analytics Dashboard**: React dashboard built with Tailwind CSS featuring:
+  - **Discover**: Client-side instant movie search & filter.
+  - **Analytics**: Rating distribution histograms, top genre metrics, & source ingestion breakdowns.
+  - **Pipeline Monitor**: Real-time ETL execution logs, status indicators, & audit trails.
+  - **Data Explorer**: Raw dataset table with color-coded quality badges (🟢/🟡/🔴) and **CSV export**.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Category                 | Technology                                                                       |
-| ------------------------ | -------------------------------------------------------------------------------- |
-| **Frontend** | [React.js](https://reactjs.org/), [Vite](https://vitejs.dev/)                     |
-| **Styling** | [Tailwind CSS](https://tailwindcss.com/)                                         |
-| **Backend as a Service** | [Appwrite](https://appwrite.io/)                                                 |
-| **Movie Data API** | [The Movie Database (TMDB)](https://www.themoviedb.org/documentation/api)        |
-| **Libraries** | [react-use](https://github.com/streamich/react-use) (for debouncing)             |
+| Component | Technology |
+|---|---|
+| **Scrapers & Pipeline** | Python 3.11, BeautifulSoup4, Pandas, Requests |
+| **Database** | Supabase (PostgreSQL) |
+| **Orchestration** | GitHub Actions (Cloud Cron) / Apache Airflow (Local DAGs) |
+| **Frontend** | React 19, Vite, Tailwind CSS |
+| **Hosting** | Vercel (Frontend), Supabase (Database) |
 
 ---
 
 ## 🚀 Getting Started
 
-To get a local copy up and running, follow these simple steps.
-
 ### 1. Clone the Repository
-
-```sh
-git clone [https://github.com/supalvasani/movierec.git](https://github.com/supalvasani/movierec.git)
+```bash
+git clone https://github.com/supalvasani/movierec.git
 cd movierec
-
 ```
+
 ### 2. Install Dependencies
+```bash
+# Install frontend dependencies
+npm install
 
-This project uses **pnpm** for package management.
-
-```sh
-pnpm install
-
+# Install Python pipeline dependencies
+pip install -r pipeline/requirements.txt
 ```
-### 3. Set up Environment Variables
 
-Create a file named `.env.local` in the root of the project. Copy the example below and replace the placeholder values with your actual API keys and IDs.
+### 3. Run the Scraper Pipeline Locally
+```bash
+python pipeline/main.py
+```
+This executes the scraper, cleans the records, computes data quality scores, and outputs dataset JSON files to `public/data/`.
 
+### 4. Run the React Web Dashboard
+```bash
+npm run dev
+```
+Open `http://localhost:5173` to explore the dashboard across all 4 views.
+
+---
+
+## 🗄️ Database Setup (Supabase)
+
+To enable live cloud database sync, run the following SQL script in your Supabase SQL Editor:
+
+```sql
+CREATE TABLE IF NOT EXISTS movies (
+    title TEXT PRIMARY KEY,
+    year INT,
+    rating FLOAT,
+    votes INT,
+    director TEXT,
+    cast_members TEXT,
+    studio TEXT,
+    genre TEXT,
+    poster_url TEXT,
+    worldwide_gross TEXT,
+    source TEXT,
+    quality_score INT
+);
+
+CREATE TABLE IF NOT EXISTS pipeline_runs (
+    id TEXT PRIMARY KEY,
+    timestamp TIMESTAMP DEFAULT NOW(),
+    status TEXT,
+    raw_records_extracted INT,
+    clean_records_output INT,
+    records_dropped INT,
+    avg_quality_score FLOAT,
+    duration_seconds FLOAT,
+    sources_scraped TEXT[]
+);
+```
+
+Add your Supabase keys to `.env`:
 ```env
-# .env.local
-
-VITE_TMDB_API_KEY="your_tmdb_api_key_here"
-VITE_APPWRITE_PROJECT_ID="your_appwrite_project_id_here"
-VITE_APPWRITE_DATABASE_ID="your_appwrite_database_id_here"
-VITE_APPWRITE_COLLECTION_ID="your_appwrite_collection_id_here"
-
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
-### 4. Run the Development Server
 
-```sh
-pnpm run dev
+---
+
+## 📈 Pipeline Metrics & Quality Scoring
+
+| Quality Score | Indicator | Definition |
+|---|---|---|
+| **90 - 100%** | 🟢 High | Complete record (Title, Year, Rating, Director, Genre, Poster) |
+| **60 - 89%** | 🟡 Medium | Partial record (Missing poster or director) |
+| **< 60%** | 🔴 Low | Sparse record (Missing rating or genre) |

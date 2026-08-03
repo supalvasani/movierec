@@ -1,0 +1,218 @@
+[
+  {
+    "id": "run-1785730974",
+    "timestamp": "2026-08-03T09:52:54.640872",
+    "status": "SUCCESS",
+    "raw_records_extracted": 144,
+    "clean_records_output": 100,
+    "records_dropped": 44,
+    "avg_quality_score": 81.6,
+    "duration_seconds": 27.61,
+    "sources_scraped": [
+      "BookMyShow",
+      "BoxOfficeMojo",
+      "Wikipedia",
+      "IMDb Top Rated"
+    ]
+  },
+  {
+    "id": "run-1785730828",
+    "timestamp": "2026-08-03T09:50:28.722324",
+    "status": "SUCCESS",
+    "raw_records_extracted": 461,
+    "clean_records_output": 427,
+    "records_dropped": 34,
+    "avg_quality_score": 68.3,
+    "duration_seconds": 589.39,
+    "sources_scraped": [
+      "BookMyShow",
+      "BoxOfficeMojo",
+      "Wikipedia",
+      "IMDb Top Rated"
+    ]
+  },
+  {
+    "id": "run-1785730735",
+    "timestamp": "2026-08-03T09:48:55.890679",
+    "status": "SUCCESS",
+    "raw_records_extracted": 459,
+    "clean_records_output": 99,
+    "records_dropped": 360,
+    "avg_quality_score": 81.2,
+    "duration_seconds": 45.52,
+    "sources_scraped": [
+      "BookMyShow",
+      "BoxOfficeMojo",
+      "Wikipedia",
+      "IMDb Top Rated"
+    ]
+  },
+  {
+    "id": "run-1785730410",
+    "timestamp": "2026-08-03T09:43:00",
+    "status": "SUCCESS",
+    "raw_records_extracted": 105,
+    "clean_records_output": 86,
+    "records_dropped": 19,
+    "avg_quality_score": 81.0,
+    "duration_seconds": 3.5,
+    "sources_scraped": [
+      "BookMyShow",
+      "IMDb Top Rated",
+      "BoxOfficeMojo"
+    ]
+  },
+  {
+    "id": "fast-sync-run",
+    "timestamp": "2026-08-03T09:37:00",
+    "status": "SUCCESS",
+    "raw_records_extracted": 144,
+    "clean_records_output": 126,
+    "records_dropped": 0,
+    "avg_quality_score": 77.6,
+    "duration_seconds": 5.0,
+    "sources_scraped": [
+      "BookMyShow",
+      "IMDb Top Rated",
+      "BoxOfficeMojo",
+      "Wikipedia"
+    ]
+  },
+  {
+    "id": "run-1785699830",
+    "timestamp": "2026-08-03T01:13:50.191462",
+    "status": "SUCCESS",
+    "raw_records_extracted": 439,
+    "clean_records_output": 7,
+    "records_dropped": 432,
+    "avg_quality_score": 74.3,
+    "duration_seconds": 91.98,
+    "sources_scraped": [
+      "BookMyShow",
+      "BoxOfficeMojo",
+      "Wikipedia",
+      "IMDb"
+    ]
+  },
+  {
+    "id": "run-1785699626",
+    "timestamp": "2026-08-03T01:10:26.293386",
+    "status": "SUCCESS",
+    "raw_records_extracted": 438,
+    "clean_records_output": 404,
+    "records_dropped": 34,
+    "avg_quality_score": 40.6,
+    "duration_seconds": 335.99,
+    "sources_scraped": [
+      "BookMyShow",
+      "BoxOfficeMojo",
+      "Wikipedia",
+      "IMDb"
+    ]
+  },
+  {
+    "id": "run-1785699379",
+    "timestamp": "2026-08-03T01:06:19.301518",
+    "status": "SUCCESS",
+    "raw_records_extracted": 413,
+    "clean_records_output": 83,
+    "records_dropped": 330,
+    "avg_quality_score": 96.9,
+    "duration_seconds": 350.13,
+    "sources_scraped": [
+      "Wikipedia",
+      "IMDb",
+      "BoxOfficeMojo"
+    ]
+  },
+  {
+    "id": "run-1785699224",
+    "timestamp": "2026-08-03T01:03:44.608918",
+    "status": "SUCCESS",
+    "raw_records_extracted": 413,
+    "clean_records_output": 106,
+    "records_dropped": 307,
+    "avg_quality_score": 95.1,
+    "duration_seconds": 325.11,
+    "sources_scraped": [
+      "Wikipedia",
+      "IMDb",
+      "BoxOfficeMojo"
+    ]
+  },
+  {
+    "id": "run-1785698988",
+    "timestamp": "2026-08-03T00:59:48.889528",
+    "status": "SUCCESS",
+    "raw_records_extracted": 383,
+    "clean_records_output": 127,
+    "records_dropped": 256,
+    "avg_quality_score": 93.5,
+    "duration_seconds": 331.29,
+    "sources_scraped": [
+      "Wikipedia",
+      "IMDb",
+      "BoxOfficeMojo"
+    ]
+  },
+  {
+    "id": "run-1785698572",
+    "timestamp": "2026-08-03T00:52:52.358218",
+    "status": "SUCCESS",
+    "raw_records_extracted": 65,
+    "clean_records_output": 49,
+    "records_dropped": 16,
+    "avg_quality_score": 58.8,
+    "duration_seconds": 57.1,
+    "sources_scraped": [
+      "Wikipedia",
+      "IMDb",
+      "BoxOfficeMojo"
+    ]
+  },
+  {
+    "id": "run-1785698354",
+    "timestamp": "2026-08-03T00:49:14.321641",
+    "status": "SUCCESS",
+    "raw_records_extracted": 65,
+    "clean_records_output": 21,
+    "records_dropped": 44,
+    "avg_quality_score": 82.9,
+    "duration_seconds": 22.54,
+    "sources_scraped": [
+      "Wikipedia",
+      "IMDb",
+      "BoxOfficeMojo"
+    ]
+  },
+  {
+    "id": "run-1785697588",
+    "timestamp": "2026-08-03T00:36:28.894124",
+    "status": "SUCCESS",
+    "raw_records_extracted": 65,
+    "clean_records_output": 21,
+    "records_dropped": 44,
+    "avg_quality_score": 88.6,
+    "duration_seconds": 22.85,
+    "sources_scraped": [
+      "Wikipedia",
+      "IMDb",
+      "BoxOfficeMojo"
+    ]
+  },
+  {
+    "id": "run-1785697437",
+    "timestamp": "2026-08-03T00:33:57.887437",
+    "status": "SUCCESS",
+    "raw_records_extracted": 65,
+    "clean_records_output": 49,
+    "records_dropped": 16,
+    "avg_quality_score": 46.1,
+    "duration_seconds": 4.33,
+    "sources_scraped": [
+      "Wikipedia",
+      "IMDb",
+      "BoxOfficeMojo"
+    ]
+  }
+]
