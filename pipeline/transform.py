@@ -110,7 +110,10 @@ def calculate_quality_score(record):
     if record.get("title") and str(record["title"]).strip().lower() not in ["none", "nan", "unknown"]:
         score += 20
     year = record.get("year")
-    if year and isinstance(year, (int, float)) and 1900 <= year <= 2030:
+    # Upper year bound: 5 years ahead of today — accommodates announced future releases
+    # without ever needing a manual update.
+    upper_year_bound = datetime.datetime.now().year + 5
+    if year and isinstance(year, (int, float)) and 1900 <= year <= upper_year_bound:
         score += 20
     if record.get("rating") is not None and record["rating"] > 0:
         score += 20
@@ -136,7 +139,7 @@ def transform_and_merge(wiki_data, imdb_data, bo_data, bms_data=None, classics_d
         if c_title:
             all_records.append({
                 "title": c_title,
-                "year": 2026,
+                "year": datetime.datetime.now().year,  # Placeholder; OMDb enrichment overwrites with real year
                 "rating": clean_val(r.get("rating")),
                 "votes": 0,
                 "director": "Unknown",
@@ -174,7 +177,7 @@ def transform_and_merge(wiki_data, imdb_data, bo_data, bms_data=None, classics_d
         if t:
             all_records.append({
                 "title": t,
-                "year": 2026,
+                "year": datetime.datetime.now().year,  # Placeholder; OMDb enrichment overwrites with real year
                 "rating": clean_val(r.get("rating")),
                 "votes": 0,
                 "director": "Unknown",
@@ -224,6 +227,19 @@ def transform_and_merge(wiki_data, imdb_data, bo_data, bms_data=None, classics_d
 
     # FILTER: ONLY KEEP MOVIES THAT HAVE A VALID REAL POSTER URL!
     cleaned = [m for m in cleaned if m.get("poster_url") and m.get("poster_url") != "N/A"]
+
+    # RE-VALIDATE IN_THEATERS STATUS after OMDb enrichment may have overwritten the year.
+    # A movie scraped from BookMyShow but confirmed by OMDb to be older than 2024
+    # cannot actually be in current theaters — reclassify it to CLASSIC.
+    current_year = datetime.datetime.now().year
+    for m in cleaned:
+        if m.get("status") == "IN_THEATERS":
+            movie_year = m.get("year")
+            if isinstance(movie_year, (int, float)) and movie_year < (current_year - 1):
+                logger.info(f"Reclassifying '{m.get('title')}' ({movie_year}) from IN_THEATERS to CLASSIC — year too old.")
+                m["status"] = "CLASSIC"
+                m["source"] = "BookMyShow (Re-release)"
+                m["worldwide_gross"] = "Classic Re-release"
 
     for m in cleaned:
         for k, v in m.items():

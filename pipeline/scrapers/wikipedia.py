@@ -2,15 +2,19 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import logging
+import datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("WikipediaScraper")
 
-def scrape_wikipedia_movies(year=2026, limit=40):
+def scrape_wikipedia_movies(year=None, limit=40):
     """
     Dynamically scrapes upcoming and released movies from Wikipedia's year-in-film catalog.
-    No hardcoded movie arrays.
+    Defaults to the current calendar year at runtime — never hardcoded.
     """
+    if year is None:
+        year = datetime.datetime.now().year
+
     urls = [
         f"https://en.wikipedia.org/wiki/{year}_in_film",
         f"https://en.wikipedia.org/wiki/List_of_American_films_of_{year}"
@@ -79,5 +83,5 @@ def scrape_wikipedia_movies(year=2026, limit=40):
     return scraped_movies
 
 if __name__ == "__main__":
-    res = scrape_wikipedia_movies(2026)
+    res = scrape_wikipedia_movies()
     print(f"Sample scraped titles ({len(res)} total): {[m['title'] for m in res[:5]]}")

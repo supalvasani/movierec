@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import logging
+import datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("BookMyShowScraper")
@@ -11,15 +12,16 @@ def clean_bms_title(raw_text):
         return ""
     # Strip certification badges (UA13+, UA16+, A, U, etc.) and language suffixes
     cleaned = re.split(r'(?:UA\d*\+?|A|U|UA)\b', raw_text)[0]
-    # Remove any stray trailing characters
     cleaned = cleaned.strip()
     return cleaned if len(cleaned) > 1 else raw_text.strip()
 
 def scrape_bookmyshow_movies():
     """
     Dynamically scrapes movies currently showing and trending on BookMyShow India.
-    Includes official BookMyShow poster URLs.
+    Year is set to the current calendar year at runtime — never hardcoded.
     """
+    current_year = datetime.datetime.now().year
+
     urls = [
         "https://in.bookmyshow.com/explore/movies-mumbai",
         "https://in.bookmyshow.com/explore/movies-national-capital-region-ncr"
@@ -54,7 +56,10 @@ def scrape_bookmyshow_movies():
                         seen_titles.add(key)
                         scraped_movies.append({
                             "title": clean_title,
-                            "year": 2026,
+                            # Use current year as initial placeholder.
+                            # OMDb enrichment in transform.py will overwrite this
+                            # with the actual release year from the API.
+                            "year": current_year,
                             "poster_url": poster,
                             "source": "BookMyShow",
                             "status": "IN_THEATERS",

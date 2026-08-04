@@ -1,15 +1,19 @@
 import requests
 from bs4 import BeautifulSoup
 import logging
+import datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("BoxOfficeScraper")
 
-def scrape_box_office_mojo(year=2026):
+def scrape_box_office_mojo(year=None):
     """
     Scrapes movies currently running in theaters for the specified year from Box Office Mojo.
-    Returns real theatrical gross figures and release dates.
+    Defaults to the current calendar year at runtime — never hardcoded.
     """
+    if year is None:
+        year = datetime.datetime.now().year
+
     url = f"https://www.boxofficemojo.com/year/{year}/"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
@@ -31,7 +35,8 @@ def scrape_box_office_mojo(year=2026):
             if len(cols) >= 6:
                 title = cols[1].text.strip()
                 gross = cols[5].text.strip()  # Total Gross
-                release_day = cols[8].text.strip() if len(cols) > 8 else "2026"
+                # Fallback to current year string if release day column is missing
+                release_day = cols[8].text.strip() if len(cols) > 8 else str(year)
 
                 if title and gross and gross != "-":
                     movies.append({
@@ -40,7 +45,7 @@ def scrape_box_office_mojo(year=2026):
                         "year": year,
                         "release_day": release_day,
                         "source": "BoxOfficeMojo",
-                        "status": "IN_THEATERS"  # Movies in the yearly box office chart are in theaters / released!
+                        "status": "IN_THEATERS"
                     })
 
         logger.info(f"Scraped {len(movies)} theatrical movies from Box Office Mojo ({year})")
@@ -50,5 +55,5 @@ def scrape_box_office_mojo(year=2026):
         return []
 
 if __name__ == "__main__":
-    res = scrape_box_office_mojo(2026)
+    res = scrape_box_office_mojo()
     print(f"Scraped Box Office sample ({len(res)} total): {res[:3] if res else 'None'}")

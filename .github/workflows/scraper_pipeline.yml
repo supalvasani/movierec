@@ -1,10 +1,12 @@
-name: Daily Movie Data Scraper Pipeline
+name: Movie Data Scraper Pipeline
 
 on:
   schedule:
-    # Runs daily at 00:00 UTC (5:30 AM IST)
-    - cron: '0 0 * * *'
-  workflow_dispatch: # Allows manual trigger from GitHub UI
+    # Run at 00:30 UTC (6:00 AM IST) — morning refresh, catches overnight releases
+    - cron: '30 0 * * *'
+    # Run at 12:30 UTC (6:00 PM IST) — evening refresh, catches Friday new releases going live
+    - cron: '30 12 * * *'
+  workflow_dispatch: # Manual trigger from GitHub UI at any time
 
 jobs:
   run-pipeline:
@@ -28,6 +30,7 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_OMDB_API_KEY: ${{ secrets.VITE_OMDB_API_KEY }}
         run: |
           python pipeline/main.py
 
@@ -36,5 +39,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add public/data/
-          git commit -m "auto: update movie datasets and pipeline logs [skip ci]" || exit 0
+          git diff --staged --quiet || git commit -m "auto: refresh movie dataset $(date -u +'%Y-%m-%d %H:%M UTC') [skip ci]"
           git push

@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import logging
+import datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("IMDbScraper")
@@ -33,7 +34,8 @@ def scrape_imdb_in_theaters():
                 for edge in chart_titles[:40]:
                     node = edge.get("node", {})
                     title = node.get("titleText", {}).get("text", "")
-                    year = node.get("releaseYear", {}).get("year", 2026)
+                    # Use None when IMDb doesn't provide a year — OMDb enrichment will resolve it.
+                    year = node.get("releaseYear", {}).get("year") or None
                     rating = node.get("ratingsSummary", {}).get("aggregateRating")
                     vote_count = node.get("ratingsSummary", {}).get("voteCount", 0)
                     poster = node.get("primaryImage", {}).get("url") if node.get("primaryImage") else None
