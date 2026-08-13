@@ -8,6 +8,7 @@ import WatchlistPanel from './Components/WatchlistPanel.jsx';
 import ToastContainer, { toast } from './Components/Toast.jsx';
 import useUserLibrary from './hooks/useUserLibrary.js';
 import { searchMovies, scrapeMoreMovies } from './services/movieService.js';
+import { fetchMoviesData, fetchPipelineRuns } from './services/dataService.js';
 
 const INITIAL_LIMIT = 8;
 
@@ -102,13 +103,12 @@ const App = () => {
         }
     };
 
-    // Load movies.json
+    // Load dataset (Supabase or local JSON fallback)
     useEffect(() => {
         const load = async () => {
             setIsLoading(true);
             try {
-                const res = await fetch(`/data/movies.json?t=${Date.now()}`);
-                const data = await res.json();
+                const data = await fetchMoviesData();
                 const valid = (data || []).filter((m) => m.poster_url && m.poster_url !== 'N/A');
                 valid.sort((a, b) => {
                     const aR = a.poster_url?.includes('m.media-amazon.com') || a.poster_url?.includes('bmscdn.com') ? 2 : 1;
@@ -132,8 +132,7 @@ const App = () => {
 
     // Load pipeline status
     useEffect(() => {
-        fetch('/data/pipeline_runs.json')
-            .then((r) => r.json())
+        fetchPipelineRuns()
             .then((data) => {
                 if (data?.[0]) {
                     setPipelineStatus({ status: data[0].status, timestamp: data[0].timestamp });
@@ -164,19 +163,20 @@ const App = () => {
     // Strict accuracy guard: a movie only shows as "In Theaters" if:
     //   (a) it is tagged IN_THEATERS / BookMyShow by the pipeline, AND
     //   (b) its year is recent (current year or the year before).
+    //   (b) its year is recent (current year).
     // This prevents old films whose status was incorrectly inherited from showing
     // in the theater section — catches both pipeline misclassifications and live scraper results.
     const currentYear = new Date().getFullYear();
     const inTheaters = movies.filter((m) => {
         const isTagged = m.source === 'BookMyShow' || m.status === 'IN_THEATERS';
         const movieYear = parseInt(m.year) || 0;
-        const isRecent = movieYear >= currentYear - 1;
+        const isRecent = movieYear >= currentYear;
         return isTagged && isRecent;
     });
     const classics = movies.filter((m) => {
         const isTagged = m.source === 'BookMyShow' || m.status === 'IN_THEATERS';
         const movieYear = parseInt(m.year) || 0;
-        const isRecent = movieYear >= currentYear - 1;
+        const isRecent = movieYear >= currentYear;
         // Classic = not a valid in-theaters movie (either not tagged, or tagged but year is too old)
         return !isTagged || !isRecent;
     });

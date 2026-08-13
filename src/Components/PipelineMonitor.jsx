@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+import { fetchPipelineRuns } from '../services/dataService.js';
+
 // ─── Animated counter ────────────────────────────────────────────────────────
 const useCountUp = (target, duration = 900) => {
     const [value, setValue] = useState(0);
@@ -131,8 +133,7 @@ const PipelineMonitor = () => {
     const fetchRuns = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch('/data/pipeline_runs.json');
-            const data = await res.json();
+            const data = await fetchPipelineRuns();
             setRuns(data || []);
         } catch (err) {
             console.error('Failed to load pipeline runs:', err);

@@ -235,7 +235,7 @@ def transform_and_merge(wiki_data, imdb_data, bo_data, bms_data=None, classics_d
     for m in cleaned:
         if m.get("status") == "IN_THEATERS":
             movie_year = m.get("year")
-            if isinstance(movie_year, (int, float)) and movie_year < (current_year - 1):
+            if isinstance(movie_year, (int, float)) and movie_year < current_year:
                 logger.info(f"Reclassifying '{m.get('title')}' ({movie_year}) from IN_THEATERS to CLASSIC — year too old.")
                 m["status"] = "CLASSIC"
                 m["source"] = "BookMyShow (Re-release)"
