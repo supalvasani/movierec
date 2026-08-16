@@ -1,5 +1,21 @@
 [
   {
+    "id": "run-1786885773",
+    "timestamp": "2026-08-16T13:09:33.062496",
+    "status": "WARNING",
+    "raw_records_extracted": 99,
+    "clean_records_output": 0,
+    "records_dropped": 99,
+    "avg_quality_score": 0,
+    "duration_seconds": 6.04,
+    "sources_scraped": [
+      "BookMyShow",
+      "BoxOfficeMojo",
+      "Wikipedia",
+      "IMDb Top Rated"
+    ]
+  },
+  {
     "id": "run-1786846031",
     "timestamp": "2026-08-16T02:07:11.904914",
     "status": "WARNING",
