@@ -1,5 +1,21 @@
 [
   {
+    "id": "run-1788068476",
+    "timestamp": "2026-08-30T05:41:16.361654",
+    "status": "WARNING",
+    "raw_records_extracted": 99,
+    "clean_records_output": 0,
+    "records_dropped": 99,
+    "avg_quality_score": 0,
+    "duration_seconds": 10.1,
+    "sources_scraped": [
+      "BookMyShow",
+      "BoxOfficeMojo",
+      "Wikipedia",
+      "IMDb Top Rated"
+    ]
+  },
+  {
     "id": "run-1788022183",
     "timestamp": "2026-08-29T16:49:43.912874",
     "status": "WARNING",
@@ -771,21 +787,6 @@
     "records_dropped": 44,
     "avg_quality_score": 82.9,
     "duration_seconds": 22.54,
-    "sources_scraped": [
-      "Wikipedia",
-      "IMDb",
-      "BoxOfficeMojo"
-    ]
-  },
-  {
-    "id": "run-1785697588",
-    "timestamp": "2026-08-03T00:36:28.894124",
-    "status": "SUCCESS",
-    "raw_records_extracted": 65,
-    "clean_records_output": 21,
-    "records_dropped": 44,
-    "avg_quality_score": 88.6,
-    "duration_seconds": 22.85,
     "sources_scraped": [
       "Wikipedia",
       "IMDb",
